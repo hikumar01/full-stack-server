@@ -21,12 +21,17 @@ app.get('/api/message', (req, res) => {
 	res.json({ message: 'Hello from Express!' });
 });
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files from the dist directory
+app.use(express.static(path.join(__dirname, 'dist')));
 
 // Catch-all route to serve the React frontend
 app.get('*', (req, res) => {
-	res.sendFile(path.join(__dirname, 'public', 'index.html'));
+	console.log('* Request URL: ', req.originalUrl);
+	if (req.originalUrl === '/favicon.ico') {
+		res.status(204).end();
+		return;
+	}
+	res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 // Start the server
