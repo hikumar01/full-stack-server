@@ -2,7 +2,7 @@
 node_modules
 
 # Production
-public/bundle.js
+/dist
 
 # Logs
 npm-debug.log*

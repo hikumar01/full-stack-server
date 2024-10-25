@@ -1,24 +1,66 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
-module.exports = {
-  mode: 'development', // Switch to 'production' for production builds
-  entry: './src/index.jsx', // Entry point for the React app
-  output: {
-    path: path.resolve(__dirname, 'public'),
-    filename: 'bundle.js', // Output bundle file in the public folder
-  },
-  module: {
-    rules: [
-      {
-        test: /\.jsx$/, // Transpile all .jsx files
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === 'production'; // Check if the mode is production
+
+  return {
+    mode: isProduction ? 'production' : 'development',
+    entry: './src/index.jsx', // Entry file
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: '[name].bundle.js',
+      chunkFilename: '[name].chunk.js',
+      publicPath: '/',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx)$/, // Transpile JS and JSX files
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+          },
         },
+        {
+          test: /\.css$/, // Load CSS files
+          use: ['style-loader', 'css-loader'],
+        },
+      ],
+    },
+    resolve: {
+      extensions: ['.js', '.jsx'],
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all', // Split all chunks
       },
+      minimize: isProduction, // Enable minimization only in production
+      minimizer: isProduction ?
+        [
+          new TerserPlugin({
+            terserOptions: {
+              compress: {
+                drop_console: true, // Drop console.log statements in production
+              },
+            },
+          }),
+        ] :
+        [],
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: './index.html', // Input HTML file
+        filename: 'index.html', // Output HTML file
+      }),
     ],
-  },
-  resolve: {
-    extensions: ['.js', '.jsx'], // Resolve JS and JSX files
-  },
+    devServer: {
+      contentBase: path.join(__dirname, 'dist'),
+      compress: true,
+      port: 8080,
+      hot: true,
+      historyApiFallback: true,
+    },
+  };
 };
