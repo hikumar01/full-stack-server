@@ -10,13 +10,13 @@ app.use(express.json());
 
 app.disable("x-powered-by");
 
-function isChromeToolRequests(url) {
+function isChromeToolRequestUrl(url) {
 	return (url === '/json/version' || url === '/json/list');
 }
 
 app.use((req, res, next) => {
 	res.on('finish', () => {
-		if (!isChromeToolRequests(req.originalUrl)) {
+		if (!isChromeToolRequestUrl(req.originalUrl)) {
 			console.log(`Request: ${req.method} ${req.originalUrl} -> ${res.statusCode} (${res.statusMessage})`);
 		}
 	});
@@ -37,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 // Catch-all route to serve the React frontend
 app.get('*', (req, res) => {
-	if (!isChromeToolRequests(req.originalUrl)) {
+	if (!isChromeToolRequestUrl(req.originalUrl)) {
 		console.log(`* Request: ${req.originalUrl}`);
 	}
 	res.sendFile(path.join(__dirname, 'dist', 'index.html'));
