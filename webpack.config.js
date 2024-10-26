@@ -32,6 +32,7 @@ module.exports = (env, argv) => {
     resolve: {
       extensions: ['.js', '.jsx'],
     },
+    devtool: isProduction ? false : 'eval-source-map',
     optimization: {
       splitChunks: {
         chunks: 'all', // Split all chunks
