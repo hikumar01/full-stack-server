@@ -1,0 +1,21 @@
+.inputDiv {
+  background-color: aliceblue;
+  /* height: 100%; */
+  width: 100%;
+  border-color: black;
+  border: 1px solid;
+  padding: 10px;
+  margin: 5px;
+  font-size: 13px;
+}
+
+.inputTextarea {
+  width: 100%;
+  /* height: 100%; */
+  resize: none;
+  border-color: black;
+  border: 1px solid;
+  padding: 10px;
+  margin: 5px;
+  font-size: 13px;
+}
