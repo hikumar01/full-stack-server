@@ -1,0 +1,8 @@
+.rightPopup {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 3px;
+  font-size: small;
+  background-color: #69696976;
+}
