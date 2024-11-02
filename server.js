@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 
+const PORT = process.env.PORT || 8000;
 const app = express();
 
 // Middleware
@@ -44,7 +45,6 @@ app.get('*', (req, res) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
 	console.log(`Express server running on port http://localhost:${PORT}`);
 });
