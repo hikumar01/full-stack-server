@@ -1,8 +1,13 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
+import { fileURLToPath } from 'url';
 
-module.exports = (env, argv) => {
+// Get __dirname in ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const config = (env, argv) => {
   const isProduction = argv.mode === 'production'; // Check if the mode is production
 
   return {
@@ -65,3 +70,5 @@ module.exports = (env, argv) => {
     },
   };
 };
+
+export default config;
