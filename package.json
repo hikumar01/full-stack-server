@@ -1,12 +1,12 @@
 {
   "name": "full-stack-server",
   "version": "0.0.1",
-  "main": "server.js",
+  "main": "server/server.js",
   "type": "module",
   "scripts": {
-    "start": "PORT=8080 node server.js",
+    "start": "PORT=8080 node server/server.js",
     "build": "webpack --mode production",
-    "dev": "webpack --mode development --watch & NODE_ENV=development PORT=8080 nodemon --inspect=9229 server.js",
+    "dev": "webpack --mode development --watch & NODE_ENV=development PORT=8080 nodemon --inspect=9229 server/server.js",
     "clean": "rm -rf dist node_modules",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"

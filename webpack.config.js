@@ -12,7 +12,7 @@ const config = (env, argv) => {
 
   return {
     mode: isProduction ? 'production' : 'development',
-    entry: './src/index.jsx', // Entry file
+    entry: './client/main.jsx', // Entry file
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: '[name].bundle.js',
@@ -57,7 +57,7 @@ const config = (env, argv) => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: './index.html', // Input HTML file
+        template: './client/index.html', // Input HTML file
         filename: 'index.html', // Output HTML file
       }),
     ],
