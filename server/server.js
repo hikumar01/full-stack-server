@@ -1,24 +1,12 @@
 import express, {Router as router} from 'express';
 import session from 'express-session';
-import path from 'path';
 import cors from 'cors';
-import {fileURLToPath} from 'url';
 import RedisDB from './redisDB.js';
+import staticFileHandling from './staticFileHandling.js';
+import Colors from './constants.js';
 
 const PORT = process.env.PORT || 8080;
 const app = express();
-
-// Define color codes
-const reset = '\x1b[0m';
-const red = '\x1b[31m';
-const green = '\x1b[32m';
-// const yellow = '\x1b[33m';
-const blue = '\x1b[34m';
-
-// Get __dirname in ES module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const rootDirectory = path.resolve(__dirname, '..');
 
 // Middleware
 app.use(cors());
@@ -46,7 +34,8 @@ function isChromeToolRequestUrl(url) {
 app.use((req, res, next) => {
     res.on('finish', () => {
         if (!isChromeToolRequestUrl(req.originalUrl)) {
-            console.log(`Request: ${req.method} ${req.originalUrl} -> ${res.statusCode} (${res.statusMessage}) - ${green}SID(${req.session.id})${reset}`);
+            console.log(`Request: ${req.method} ${req.originalUrl} -> ${res.statusCode} (${res.statusMessage})`,
+                ` - ${Colors.Green}SID(${req.session.id})${Colors.Reset}`);
             // console.log('Session Data:', req.session);
         }
     });
@@ -84,27 +73,15 @@ app.get('/logout', (req, res) => {
     });
 });
 
-app.get('/favicon.ico', (req, res) => {
-    res.status(204).end();
-    return;
-});
-
+// Redis DB
 const redisRouter = router();
-RedisDB.addDBRoutes(redisRouter);
+RedisDB.addRoutes(redisRouter);
 app.use('/redis', redisRouter);
 
 // Serve static files from the dist directory
-app.use(express.static(path.join(rootDirectory, 'dist')));
-
-// Catch-all route to serve the React frontend
-app.get('*', (req, res) => {
-    if (!isChromeToolRequestUrl(req.originalUrl)) {
-        console.log(`${red}* Request: ${req.originalUrl}${reset}`);
-    }
-    res.sendFile(path.join(rootDirectory, 'index.html'));
-});
+staticFileHandling.addRoutes(app);
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`${blue}Express server running on http://localhost:${PORT}${reset}`);
+    console.log(`${Colors.Blue}Express server running on http://localhost:${PORT}${Colors.Reset}`);
 });

@@ -6,7 +6,7 @@ export default [
   { ignores: ['dist'] },
   {
     files: [
-      'client/**/*.{js,jsx}',
+      'react/**/*.{js,jsx}',
       'server/**/*.{js,jsx}'
     ],
     plugins: {
