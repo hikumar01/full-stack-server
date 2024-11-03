@@ -49,10 +49,10 @@ const deleteKey = async (req, res) => {
     }
 };
 
-function addDBRoutes(router) {
+function addRoutes(router) {
     router.get('/set/:key/:value', setKeyValue);
     router.get('/get/:key', getValueByKey);
     router.get('/delete/:key', deleteKey);
 }
 
-export default {redisStore, addDBRoutes};
+export default {redisStore, addRoutes};

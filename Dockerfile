@@ -10,11 +10,11 @@ COPY server ./server
 
 # React
 
-COPY client ./client
+COPY react ./react
 RUN npm run build
 
 # Clean up
-RUN rm -rf client .babelrc webpack.config.js package*.json
+RUN rm -rf react .babelrc webpack.config.js package*.json
 
 # Starting Server
 EXPOSE 8080
