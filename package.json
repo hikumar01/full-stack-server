@@ -4,10 +4,10 @@
   "main": "server/server.js",
   "type": "module",
   "scripts": {
-    "start": "PORT=8080 node server/server.js",
+    "start": "NODE_ENV=production PORT=8080 node server/server.js",
     "build": "webpack --mode production",
     "dev": "webpack --mode development --watch & NODE_ENV=development PORT=8080 nodemon --inspect=9229 server/server.js",
-    "clean": "rm -rf dist node_modules",
+    "clean": "rm -rf dist",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -16,12 +16,14 @@
     "npm": "10.8.2"
   },
   "dependencies": {
+    "connect-redis": "^7.1.1",
     "cors": "^2.8.5",
     "dompurify": "^3.1.7",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "redis": "^4.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.9",
