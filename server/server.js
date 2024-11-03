@@ -1,8 +1,9 @@
-import express from 'express';
+import express, {Router as router} from 'express';
 import session from 'express-session';
 import path from 'path';
 import cors from 'cors';
 import {fileURLToPath} from 'url';
+import RedisDB from './redisDB.js';
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -26,9 +27,10 @@ app.use(express.json());
 app.disable('x-powered-by');
 
 app.use(session({
+    store: RedisDB.redisStore,
     secret: 'your-secret-key',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
         secure: false, // Set to true if using HTTPS
         httpOnly: true, // Ensures the cookie is accessible only by the web server
@@ -86,6 +88,10 @@ app.get('/favicon.ico', (req, res) => {
     res.status(204).end();
     return;
 });
+
+const redisRouter = router();
+RedisDB.addDBRoutes(redisRouter);
+app.use('/redis', redisRouter);
 
 // Serve static files from the dist directory
 app.use(express.static(path.join(rootDirectory, 'dist')));
