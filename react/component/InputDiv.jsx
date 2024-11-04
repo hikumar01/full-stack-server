@@ -31,6 +31,7 @@ class InputDiv extends React.Component {
         return (
             <textarea
                 className='inputTextarea'
+                id={this.props.id}
                 value={this.state.inputString}
                 onChange={(event) => this.setState({inputString: event.target.value})} />
         );
@@ -40,6 +41,7 @@ class InputDiv extends React.Component {
         return (
             <div
                 className='inputDiv'
+                id={this.props.id}
                 onClick={() => this.props.onDivClick(this.state.inputString)}
                 dangerouslySetInnerHTML={this.updatedDivValue()} />
         );
@@ -54,8 +56,9 @@ class InputDiv extends React.Component {
 
 InputDiv.propTypes = {
     inputString: PropTypes.string.isRequired,
-    onDivClick: PropTypes.func.isRequired,
-    isDivEditable: PropTypes.bool
+    id: PropTypes.string.isRequired,
+    isDivEditable: PropTypes.bool,
+    onDivClick: PropTypes.func.isRequired
 };
 
 export default InputDiv;

@@ -45,11 +45,13 @@ class App extends React.Component {
                     <InputDiv
                         ref={this.inputDiv1Ref}
                         inputString='Enter String 1'
+                        id='str1'
                         isDivEditable={this.state.isDivEditable}
                         onDivClick={this.handleDivClick} />
                     <InputDiv
                         ref={this.inputDiv2Ref}
                         inputString='Enter String 2'
+                        id='str2'
                         isDivEditable={this.state.isDivEditable}
                         onDivClick={this.handleDivClick} />
                 </div>
