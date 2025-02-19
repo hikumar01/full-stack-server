@@ -7,22 +7,53 @@ class InputDiv extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            inputString: props.inputString
+            plainStr: props.plainStr,
+            updatedStr: ''
         };
     }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.inputString !== this.props.inputString) {
-            this.setState({inputString: this.props.inputString});
-        }
+    getValue() {
+        return this.state.plainStr;
     }
 
-    getValue() {
-        return this.state.inputString;
+    applyDiffs(diffs, isBase) {
+        const str = this.state.plainStr;
+
+        const result = [];
+        let currentIndex = 0;
+
+        diffs.forEach(([operation, word]) => {
+            const wordIndex = str.indexOf(word, currentIndex);
+            if (wordIndex === -1) {
+                return;
+            }
+
+            const delimiter = str.slice(currentIndex, wordIndex);
+            result.push(delimiter);
+
+            if (operation === 'EQUAL') {
+                result.push(word);
+            } else if (operation === 'DELETE' && isBase) {
+                result.push(word + '-deleted');
+            } else if (operation === 'INSERT' && !isBase) {
+                result.push(word + '-inserted');
+            }
+
+            currentIndex = wordIndex + word.length;
+        });
+
+        result.push(str.slice(currentIndex));
+        return result.join('');
+    }
+
+    setUpdatedStr(result, isBase) {
+        const updatedStr = this.applyDiffs(result, isBase);
+        console.log('Updated:', updatedStr);
+        this.setState({updatedStr});
     }
 
     updatedDivValue() {
-        const unsafeHTML = '<span style=\'color: red;\'>' + this.state.inputString + '</span>';
+        const unsafeHTML = '<span style=\'color: red;\'>' + this.state.updatedStr + '</span>';
         const safeHTML = DOMPurify.sanitize(unsafeHTML);
         return {__html: safeHTML};
     }
@@ -32,8 +63,8 @@ class InputDiv extends React.Component {
             <textarea
                 className='inputTextarea'
                 id={this.props.id}
-                value={this.state.inputString}
-                onChange={(event) => this.setState({inputString: event.target.value})} />
+                value={this.state.plainStr}
+                onChange={(event) => this.setState({plainStr: event.target.value})} />
         );
     }
 
@@ -41,8 +72,7 @@ class InputDiv extends React.Component {
         return (
             <div
                 className='inputDiv'
-                id={this.props.id}
-                onClick={() => this.props.onDivClick(this.state.inputString)}
+                onClick={() => this.props.onDivClick()}
                 dangerouslySetInnerHTML={this.updatedDivValue()} />
         );
     }
@@ -55,7 +85,7 @@ class InputDiv extends React.Component {
 }
 
 InputDiv.propTypes = {
-    inputString: PropTypes.string.isRequired,
+    plainStr: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
     isDivEditable: PropTypes.bool,
     onDivClick: PropTypes.func.isRequired
