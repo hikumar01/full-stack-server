@@ -33,7 +33,7 @@ export default [
       ...react.configs['jsx-runtime'].rules,
 
       // Basic Errors
-      'no-console': 'warn',
+      // 'no-console': 'warn',
       'no-debugger': 'error',
       'no-unused-vars': 'error',
       'no-undef': 'error',

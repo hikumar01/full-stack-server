@@ -3,7 +3,7 @@ import session from 'express-session';
 import cors from 'cors';
 import RedisDB from './redisDB.js';
 import staticFileHandling from './staticFileHandling.js';
-import Colors from './constants.js';
+import Compare from './compare.js';
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -16,14 +16,14 @@ app.disable('x-powered-by');
 
 app.use(session({
     store: RedisDB.redisStore,
-    secret: 'your-secret-key',
+    secret: 'your-secret-key', // Should be read from ENV varibale, should not be hardcoded
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false, // Set to true if using HTTPS
-        httpOnly: true, // Ensures the cookie is accessible only by the web server
+        secure: false, // Not using HTTPS
+        httpOnly: true, // accessible only by the web server, not by JavaScript
         sameSite: 'strict', // Protects against CSRF attacks by not sending the cookie with cross-site requests
-        maxAge: 60 * 1000 // 1 minute in milliseconds
+        maxAge: 5 * 60 * 1000 // 5 minute
     }
 }));
 
@@ -34,16 +34,27 @@ function isChromeToolRequestUrl(url) {
 app.use((req, res, next) => {
     res.on('finish', () => {
         if (!isChromeToolRequestUrl(req.originalUrl)) {
-            console.log(`Request: ${req.method} ${req.originalUrl} -> ${res.statusCode} (${res.statusMessage})`,
-                ` - ${Colors.Green}SID(${req.session.id})${Colors.Reset}`);
-            // console.log('Session Data:', req.session);
+            console.log(' '.repeat(9), `${req.method} ${req.originalUrl} -> ${res.statusCode} (${res.statusMessage}) - SID(${req.session.id})`);
         }
     });
+    if (!isChromeToolRequestUrl(req.originalUrl)) {
+        console.log(`Request: ${req.method} ${req.originalUrl}`);
+    }
     next();
 });
 
-app.get('/api/count', (req, res) => {
+// req.session.userID = '12345-updated';
+// await req.session.save((err) => {
+//     if (err) {
+//         console.error('Error saving session:', err);
+//     } else {
+//         console.log('Session saved', req.session.id);
+//     }
+// });
+
+app.get('/api/count', async (req, res) => {
     if (req.session) {
+        console.log('Session ID:', req.session.id, JSON.stringify(req.session));
         req.session.views = (req.session.views || 0) + 1;
         const body = {
             views: req.session.views,
@@ -53,14 +64,6 @@ app.get('/api/count', (req, res) => {
     } else {
         res.send('Session not initialized');
     }
-});
-
-app.post('/compare', (req, res) => {
-    const {str1, str2} = req.body;
-    const body = {str1, str2};
-    console.log('Comparing: ', body);
-    res.setHeader('Content-Type', 'application/json');
-    res.json(body);
 });
 
 app.get('/logout', (req, res) => {
@@ -73,6 +76,9 @@ app.get('/logout', (req, res) => {
     });
 });
 
+// Compare
+Compare.addRoutes(app);
+
 // Redis DB
 const redisRouter = router();
 RedisDB.addRoutes(redisRouter);
@@ -83,5 +89,5 @@ staticFileHandling.addRoutes(app);
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`${Colors.Blue}Express server running on http://localhost:${PORT}${Colors.Reset}`);
+    console.log(`Express server running on http://localhost:${PORT}`);
 });

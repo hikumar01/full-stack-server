@@ -1,7 +1,7 @@
 import './main.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import Compare from './Compare';
 
 class Count extends React.Component {
     constructor(props) {
@@ -29,7 +29,7 @@ class Count extends React.Component {
             );
             this.setState({popupData: popupData});
         } catch (error) {
-            console.error('Error fetching data:', error);
+            throw new Error(`Error! fetching data: ${error}`);
         }
     };
 
@@ -47,6 +47,6 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <Count />
-        <App />
+        <Compare />
     </React.StrictMode>
 );

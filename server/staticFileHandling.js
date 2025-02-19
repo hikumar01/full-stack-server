@@ -1,7 +1,6 @@
 import express from 'express';
 import path from 'path';
 import {fileURLToPath} from 'url';
-import Colors from './constants.js';
 
 // Get __dirname in ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -14,10 +13,7 @@ const favicon = (req, res) => {
 
 // Catch-all route to serve the React frontend
 const catchAll = (req, res) => {
-    // if (!isChromeToolRequestUrl(req.originalUrl)) {
-    console.log(`${Colors.Red}* Request: ${req.originalUrl}${Colors.Reset}`);
-    // }
-    res.sendFile(path.join(rootDirectory, 'index.html'));
+    res.status(501).end();
 };
 
 function addRoutes(router) {
